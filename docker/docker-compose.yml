@@ -1,0 +1,21 @@
+services:
+  postgresql:
+    image: postgres:15
+    container_name: postgre_db_grupo4
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: grupo4_user
+      POSTGRES_PASSWORD: grupo4_pass
+      POSTGRES_DB: grupo4_db
+    networks:
+      - challenge_grupo4
+
+volumes:
+  postgres_data:
+
+networks:
+  challenge_grupo4:
+    driver: bridge
