@@ -1,6 +1,6 @@
 package br.com.fiap.tech_challenge_i.services;
 
-import br.com.fiap.tech_challenge_i.entities.User;
+import br.com.fiap.tech_challenge_i.application.domain.User;
 
 import java.util.List;
 import java.util.Optional;

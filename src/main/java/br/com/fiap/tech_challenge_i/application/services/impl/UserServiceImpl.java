@@ -1,7 +1,7 @@
 package br.com.fiap.tech_challenge_i.services.impl;
 
-import br.com.fiap.tech_challenge_i.entities.User;
-import br.com.fiap.tech_challenge_i.repositories.UserRepository;
+import br.com.fiap.tech_challenge_i.application.domain.User;
+import br.com.fiap.tech_challenge_i.application.ports.outbound.repository.UserRepository;
 import br.com.fiap.tech_challenge_i.services.IUserService;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
-package br.com.fiap.tech_challenge_i.repositories;
+package br.com.fiap.tech_challenge_i.application.ports.outbound.repositories;
 
-import br.com.fiap.tech_challenge_i.entities.User;
+import br.com.fiap.tech_challenge_i.application.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
