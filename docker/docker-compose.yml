@@ -5,7 +5,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - grupo4_postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: grupo4_user
       POSTGRES_PASSWORD: grupo4_pass
@@ -14,8 +14,9 @@ services:
       - challenge_grupo4
 
 volumes:
-  postgres_data:
+  grupo4_postgres_data:
 
 networks:
   challenge_grupo4:
     driver: bridge
+
