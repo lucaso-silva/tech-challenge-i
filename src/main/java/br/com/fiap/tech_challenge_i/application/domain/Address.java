@@ -1,23 +1,21 @@
-package br.com.fiap.tech_challenge_i.entities;
+package br.com.fiap.tech_challenge_i.application.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Getter
-@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@Entity
+@Getter
+@Setter
 public class Address {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String street;
     private String number;
+    private String neighborhood;
     private String city;
     private String state;
     private String zipCode;
