@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import br.com.fiap.tech_challenge_i.application.domain.Client;
 import br.com.fiap.tech_challenge_i.application.domain.RestaurantOwner;
 import br.com.fiap.tech_challenge_i.application.domain.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -53,12 +54,33 @@ public class UserJPAEntity {
     @Column(nullable = false)
     private LocalDate lastModifiedDate;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "address_id", nullable = false)
     private AddressJPAEntity address;
 
+    public UserJPAEntity(String name, String email, String login, String password, UserTypeJPAEntity userType,
+            LocalDate lastModifiedDate, AddressJPAEntity addressJPAEntity) {
+        this.name = name;
+        this.email = email;
+        this.login = login;
+        this.password = password;
+        this.userType = userType;
+        this.address = addressJPAEntity;
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
     public static UserJPAEntity of(User user) {
-        return new UserJPAEntity();
+        if (user instanceof Client) {
+            return new UserJPAEntity(user.getName(), user.getEmail(), user.getLogin(), user.getPassword(),
+                    UserTypeJPAEntity.CLIENT, LocalDate.now(), AddressJPAEntity.of(user.getAddress()));
+
+        }
+
+        if (user instanceof RestaurantOwner) {
+            return new UserJPAEntity(user.getName(), user.getEmail(), user.getLogin(), user.getPassword(),
+                    UserTypeJPAEntity.RESTAURANT_OWNER, LocalDate.now(), AddressJPAEntity.of(user.getAddress()));
+        }
+        throw new IllegalArgumentException("Unknown type");
     }
 
     public User toDomain() {
