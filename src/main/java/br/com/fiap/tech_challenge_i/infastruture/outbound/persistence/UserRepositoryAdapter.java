@@ -39,7 +39,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public List<User> findAll(){
+    public List<User> findAll() {
         return userJPARepository
                 .findAll()
                 .stream()
@@ -58,8 +58,9 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public Optional<User> findByEmail(String email) {
-        // TODO: Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByEmail'");
+        return userJPARepository
+                .findByEmail(email)
+                .map(UserJPAEntity::toDomain);
     }
 
     @Override
