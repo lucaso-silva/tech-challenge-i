@@ -14,7 +14,7 @@ import lombok.Setter;
 public class Address {
     private Long id;
     private String street;
-    private String number;
+    private Integer number;
     private String neighborhood;
     private String city;
     private String state;

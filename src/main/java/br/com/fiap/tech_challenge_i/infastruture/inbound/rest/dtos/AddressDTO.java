@@ -4,7 +4,7 @@ import br.com.fiap.tech_challenge_i.application.domain.Address;
 
 public record AddressDTO(
         String street,
-        String number,
+        Integer number,
         String neighborhood,
         String city,
         String state,
@@ -19,5 +19,16 @@ public record AddressDTO(
                 address.getState(),
                 address.getZipCode());
 
+    }
+
+    public Address toDomain() {
+        return Address.builder()
+                .street(this.street())
+                .number(this.number())
+                .neighborhood(this.neighborhood())
+                .city(this.city())
+                .state(this.state())
+                .zipCode(this.zipCode())
+                .build();
     }
 }
