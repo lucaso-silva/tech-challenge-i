@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import br.com.fiap.tech_challenge_i.application.domain.User;
+import br.com.fiap.tech_challenge_i.application.domain.exceptions.BusinesException;
 import br.com.fiap.tech_challenge_i.application.domain.exceptions.NotFoundException;
 import br.com.fiap.tech_challenge_i.application.ports.inbound.ForUserService;
 import br.com.fiap.tech_challenge_i.application.ports.outbound.repositories.UserRepository;
@@ -20,7 +21,11 @@ public class UserService implements ForUserService {
 
     @Override
     public User create(User user) {
-        return null;
+        Optional<User> byEmail = this.findByEmail(user.getEmail());
+        byEmail.ifPresent(u -> {
+            throw new BusinesException("Email '%s' already used".formatted(user.getEmail()));
+        });
+        return repository.create(user);
     }
 
     @Override
@@ -53,14 +58,14 @@ public class UserService implements ForUserService {
 
     @Override
     public Optional<User> findByEmail(String email) {
-        // TODO: Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByEmail'");
+        return repository.findByEmail(email);
     }
 
     @Override
     public User findByLogin(String login) {
 
         Optional<User> byLogin = repository.findByLogin(login);
-        return byLogin.orElseThrow(() -> new NotFoundException("Usuario não encontrado"));
+        return byLogin
+                .orElseThrow(() -> new NotFoundException("No users with the login '%s' were found".formatted(login)));
     }
 }
