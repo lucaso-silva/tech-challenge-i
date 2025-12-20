@@ -17,6 +17,7 @@ import br.com.fiap.tech_challenge_i.application.ports.inbound.ForUserService;
 import br.com.fiap.tech_challenge_i.infastruture.inbound.rest.dtos.UserDetailResponseDTO;
 import br.com.fiap.tech_challenge_i.infastruture.inbound.rest.dtos.UserRequestDTO;
 import br.com.fiap.tech_challenge_i.infastruture.inbound.rest.dtos.UserResponseDTO;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/user")
@@ -44,7 +45,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO requestDTO) {
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO requestDTO) {
 
         User user = forUserService.create(requestDTO.toDomain());
         URI uri = URI.create("/v1/user/" + user.getLogin());
