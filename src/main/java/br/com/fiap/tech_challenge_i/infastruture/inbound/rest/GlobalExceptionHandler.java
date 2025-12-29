@@ -22,6 +22,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 request);
     }
 
+    //TODO: Adicionar BusinesException - status code 400
+
     @ExceptionHandler(value = { Exception.class })
     protected ResponseEntity<Object> handleGeneralException(final RuntimeException ex, final WebRequest request) {
         return handleExceptionInternal(ex,

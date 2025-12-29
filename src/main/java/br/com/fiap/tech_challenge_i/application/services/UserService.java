@@ -21,6 +21,7 @@ public class UserService implements ForUserService {
 
     @Override
     public User create(User user) {
+        //TODO: Adicionar uma verificação se o login é unico e retornar um erro adequado
         Optional<User> byEmail = this.findByEmail(user.getEmail());
         byEmail.ifPresent(u -> {
             throw new BusinesException("Email '%s' already used".formatted(user.getEmail()));
@@ -45,6 +46,7 @@ public class UserService implements ForUserService {
         } else {
             List<User> usersByNameLike = repository.findAll()
                     .stream()
+                     //TODO: mudar para comparar a partir do inico da string, filtro pela letra "A" e retorna todos os nomes iniciados por "A".
                     .filter(n -> n.getName().toLowerCase().contains(name.toLowerCase()))
                     .toList();
             if (usersByNameLike.isEmpty()) {

@@ -53,4 +53,12 @@ public class UserController {
 
     }
 
+
+    /*TODO:
+    Rotas para:
+    Update de informações do usuario
+    Update da senha /v1/user/password/{login} - login é unico
+    Atualizar o endpoint do findAll para filtrar usuarios pelo nome
+
+*/
 }
