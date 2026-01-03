@@ -1,5 +1,6 @@
 package br.com.fiap.tech_challenge_i.application.services;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,8 @@ import br.com.fiap.tech_challenge_i.application.domain.exceptions.NotFoundExcept
 import br.com.fiap.tech_challenge_i.application.ports.inbound.ForUserService;
 import br.com.fiap.tech_challenge_i.application.ports.outbound.repositories.UserRepository;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class UserService implements ForUserService {
     private UserRepository repository;
@@ -21,22 +24,32 @@ public class UserService implements ForUserService {
 
     @Override
     public User create(User user) {
-        //TODO: Adicionar uma verificação se o login é unico e retornar um erro adequado
         Optional<User> byEmail = this.findByEmail(user.getEmail());
         byEmail.ifPresent(u -> {
             throw new BusinesException("Email '%s' already used".formatted(user.getEmail()));
         });
+
+        Optional<User> byLogin = this.getByLogin(user.getLogin());
+        byLogin.ifPresent(u -> {
+            throw new BusinesException("Login '%s' already used".formatted(user.getLogin()));
+        });
+
         return repository.create(user);
     }
 
     @Override
-    public User update(Long id, User user) {
+    public User updateUser(Long id, User user) {
         return null;
     }
 
     @Override
-    public void delete(Long id) {
+    public void changePassword(Long id, String oldPassword, String newPassword) {
 
+    }
+
+    @Override
+    public void delete(Long id) {
+        repository.deleteById(id);
     }
 
     @Override
@@ -46,15 +59,16 @@ public class UserService implements ForUserService {
         } else {
             List<User> usersByNameLike = repository.findAll()
                     .stream()
-                     //TODO: mudar para comparar a partir do inico da string, filtro pela letra "A" e retorna todos os nomes iniciados por "A".
-                    .filter(n -> n.getName().toLowerCase().contains(name.toLowerCase()))
+                    .filter( u ->
+                        Arrays.stream(u.getName().toLowerCase().split("\\s+"))
+                                .anyMatch(word -> word.startsWith(name.toLowerCase()))
+                    )
                     .toList();
             if (usersByNameLike.isEmpty()) {
                 throw new NotFoundException("No user was found that matches the search term '%s'.".formatted(name));
             }
 
             return usersByNameLike;
-
         }
     }
 
@@ -69,5 +83,14 @@ public class UserService implements ForUserService {
         Optional<User> byLogin = repository.findByLogin(login);
         return byLogin
                 .orElseThrow(() -> new NotFoundException("No users with the login '%s' were found".formatted(login)));
+    }
+
+    @Override
+    public boolean validateLogin(String login, String password) {
+        return false;
+    }
+
+    private Optional<User> getByLogin(String login) {
+        return repository.findByLogin(login);
     }
 }
