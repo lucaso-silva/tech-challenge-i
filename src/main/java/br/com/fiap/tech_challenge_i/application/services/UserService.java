@@ -1,5 +1,6 @@
 package br.com.fiap.tech_challenge_i.application.services;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +40,22 @@ public class UserService implements ForUserService {
 
     @Override
     public User updateUser(Long id, User user) {
-        return null;
+        User existentUser = repository.findById(id)
+                .orElseThrow(()-> new NotFoundException("User with id '%s' not found".formatted(id)));
+
+        Optional<User> byEmail = repository.findByEmail(user.getEmail());
+        byEmail.ifPresent(u -> {
+            if(!u.getId().equals(existentUser.getId())) {
+                throw new BusinesException("Email '%s' already used".formatted(user.getEmail()));
+            }
+        });
+
+        existentUser.setName(user.getName());
+        existentUser.setEmail(user.getEmail());
+        existentUser.setLastModifiedDate(LocalDateTime.now());
+        existentUser.setAddress(user.getAddress());
+
+        return repository.update(existentUser);
     }
 
     @Override

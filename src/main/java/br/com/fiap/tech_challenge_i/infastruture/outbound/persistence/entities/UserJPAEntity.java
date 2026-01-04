@@ -1,6 +1,7 @@
 package br.com.fiap.tech_challenge_i.infastruture.outbound.persistence.entities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import br.com.fiap.tech_challenge_i.application.domain.Client;
 import br.com.fiap.tech_challenge_i.application.domain.RestaurantOwner;
@@ -40,7 +41,7 @@ public class UserJPAEntity {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String login;
 
     @Column(name = "password", nullable = false)
@@ -52,14 +53,14 @@ public class UserJPAEntity {
 
     @NotNull
     @Column(nullable = false)
-    private LocalDate lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "address_id", nullable = false)
     private AddressJPAEntity address;
 
     public UserJPAEntity(String name, String email, String login, String password, UserTypeJPAEntity userType,
-            LocalDate lastModifiedDate, AddressJPAEntity addressJPAEntity) {
+            LocalDateTime lastModifiedDate, AddressJPAEntity addressJPAEntity) {
         this.name = name;
         this.email = email;
         this.login = login;
@@ -72,13 +73,13 @@ public class UserJPAEntity {
     public static UserJPAEntity of(User user) {
         if (user instanceof Client) {
             return new UserJPAEntity(user.getName(), user.getEmail(), user.getLogin(), user.getPassword(),
-                    UserTypeJPAEntity.CLIENT, LocalDate.now(), AddressJPAEntity.of(user.getAddress()));
+                    UserTypeJPAEntity.CLIENT, LocalDateTime.now(), AddressJPAEntity.of(user.getAddress()));
 
         }
 
         if (user instanceof RestaurantOwner) {
             return new UserJPAEntity(user.getName(), user.getEmail(), user.getLogin(), user.getPassword(),
-                    UserTypeJPAEntity.RESTAURANT_OWNER, LocalDate.now(), AddressJPAEntity.of(user.getAddress()));
+                    UserTypeJPAEntity.RESTAURANT_OWNER, LocalDateTime.now(), AddressJPAEntity.of(user.getAddress()));
         }
         throw new IllegalArgumentException("Unknown type");
     }

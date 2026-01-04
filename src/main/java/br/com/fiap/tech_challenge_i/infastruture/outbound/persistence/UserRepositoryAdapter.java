@@ -28,8 +28,12 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public User update(User user) {
-        // TODO: Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        UserJPAEntity userJPAEntity = UserJPAEntity.of(user);
+        userJPAEntity.setId(user.getId());
+
+        return userJPARepository
+                .save(userJPAEntity)
+                .toDomain();
     }
 
     @Override
@@ -45,6 +49,11 @@ public class UserRepositoryAdapter implements UserRepository {
                 .stream()
                 .map(UserJPAEntity::toDomain)
                 .toList();
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return Optional.empty();
     }
 
     @Override

@@ -4,13 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import br.com.fiap.tech_challenge_i.application.domain.User;
 import br.com.fiap.tech_challenge_i.application.ports.inbound.ForUserService;
@@ -53,12 +47,17 @@ public class UserController {
 
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDetailResponseDTO> updateUser(@PathVariable Long id,
+                                                            @Valid @RequestBody UserRequestDTO requestDTO) {
+        User updatedUser = forUserService.updateUser(id, requestDTO.toDomain());
+
+        return ResponseEntity.ok(UserDetailResponseDTO.toDTO(updatedUser));
+    }
 
     /*TODO:
     Rotas para:
-    Update de informações do usuario
     Update da senha /v1/user/password/{login} - login é unico
-    Atualizar o endpoint do findAll para filtrar usuarios pelo nome
 
 */
 }

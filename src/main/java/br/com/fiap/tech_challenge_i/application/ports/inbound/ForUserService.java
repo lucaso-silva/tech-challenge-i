@@ -9,14 +9,17 @@ public interface ForUserService {
 
     User create(User user);
 
-    User update(Long id, User user);
+    User updateUser(Long id, User user);
+
+    void changePassword(Long id, String oldPassword, String newPassword);
 
     void delete(Long id);
 
     List<User> findByNameLike(String name);
 
+    boolean validateLogin(String login, String password);
+
     Optional<User> findByEmail(String email);
 
     User findByLogin(String login);
-
 }
