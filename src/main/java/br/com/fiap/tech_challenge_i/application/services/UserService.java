@@ -65,6 +65,8 @@ public class UserService implements ForUserService {
 
     @Override
     public void delete(Long id) {
+        repository.findById(id)
+                .orElseThrow(()-> new NotFoundException("User with id '%s' not found".formatted(id)));
         repository.deleteById(id);
     }
 

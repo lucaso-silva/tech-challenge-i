@@ -56,6 +56,12 @@ public class UserController {
         return ResponseEntity.ok(UserDetailResponseDTO.toDTO(updatedUser));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        forUserService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     /*TODO:
     Rotas para:
     Update da senha /v1/user/password/{login} - login é unico
