@@ -3,6 +3,7 @@ package br.com.fiap.tech_challenge_i.infastruture.inbound.rest;
 import java.net.URI;
 import java.util.List;
 
+import br.com.fiap.tech_challenge_i.infastruture.inbound.rest.dtos.UpdateUserRequestDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,8 +50,8 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDetailResponseDTO> updateUser(@PathVariable Long id,
-                                                            @Valid @RequestBody UserRequestDTO requestDTO) {
-        User updatedUser = forUserService.updateUser(id, requestDTO.toDomain());
+                                                            @Valid @RequestBody UpdateUserRequestDTO requestDTO) {
+        User updatedUser = forUserService.updateUser(id, requestDTO.toCommand());
 
         return ResponseEntity.ok(UserDetailResponseDTO.toDTO(updatedUser));
     }

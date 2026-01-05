@@ -53,7 +53,9 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public Optional<User> findById(Long id) {
-        return Optional.empty();
+        return userJPARepository
+                .findById(id)
+                .map(UserJPAEntity::toDomain);
     }
 
     @Override

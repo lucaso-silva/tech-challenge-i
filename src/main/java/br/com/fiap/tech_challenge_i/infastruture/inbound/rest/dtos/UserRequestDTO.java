@@ -8,12 +8,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record UserRequestDTO(
-        @NotBlank(message = "The name cant be empty") String name,
-        @NotBlank(message = "The email cant be empty") String email,
-        @NotBlank(message = "The login cant be empty") String login,
-        @NotBlank(message = "The password cant be empty") String password,
+        @NotBlank(message = "The name can't be empty") String name,
+        @NotBlank(message = "The email can't be empty") String email,
+        @NotBlank(message = "The login can't be empty") String login,
+        @NotBlank(message = "The password can't be empty") String password,
         UserTypeDTO userTypeDTO,
-        @NotNull(message = "The address cant be empty") AddressDTO address) {
+        @NotNull(message = "The address can't be empty") AddressDTO address) {
 
     public User toDomain() {
         if (this.userTypeDTO.equals(UserTypeDTO.CLIENT)) {

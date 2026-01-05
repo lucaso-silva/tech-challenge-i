@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import br.com.fiap.tech_challenge_i.application.usecase.UpdateUserCommand;
+import br.com.fiap.tech_challenge_i.infastruture.inbound.rest.dtos.UpdateUserRequestDTO;
 import org.springframework.stereotype.Service;
 
 import br.com.fiap.tech_challenge_i.application.domain.User;
@@ -39,21 +41,19 @@ public class UserService implements ForUserService {
     }
 
     @Override
-    public User updateUser(Long id, User user) {
+    public User updateUser(Long id, UpdateUserCommand user) {
         User existentUser = repository.findById(id)
                 .orElseThrow(()-> new NotFoundException("User with id '%s' not found".formatted(id)));
 
-        Optional<User> byEmail = repository.findByEmail(user.getEmail());
+        Optional<User> byEmail = repository.findByEmail(user.email());
         byEmail.ifPresent(u -> {
             if(!u.getId().equals(existentUser.getId())) {
-                throw new BusinesException("Email '%s' already used".formatted(user.getEmail()));
+                throw new BusinesException("Email '%s' already used".formatted(user.email()));
             }
         });
 
-        existentUser.setName(user.getName());
-        existentUser.setEmail(user.getEmail());
+        user.applyTo(existentUser);
         existentUser.setLastModifiedDate(LocalDateTime.now());
-        existentUser.setAddress(user.getAddress());
 
         return repository.update(existentUser);
     }

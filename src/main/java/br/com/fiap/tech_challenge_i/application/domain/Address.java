@@ -19,4 +19,13 @@ public class Address {
     private String city;
     private String state;
     private String zipCode;
+
+    public void updateFrom(Address address) {
+        this.street = address.getStreet();
+        this.number = address.getNumber();
+        this.neighborhood = address.getNeighborhood();
+        this.city = address.getCity();
+        this.state = address.getState();
+        this.zipCode = address.getZipCode();
+    }
 }
