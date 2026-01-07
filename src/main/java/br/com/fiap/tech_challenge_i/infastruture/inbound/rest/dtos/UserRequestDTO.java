@@ -3,7 +3,7 @@ package br.com.fiap.tech_challenge_i.infastruture.inbound.rest.dtos;
 import br.com.fiap.tech_challenge_i.application.domain.Client;
 import br.com.fiap.tech_challenge_i.application.domain.RestaurantOwner;
 import br.com.fiap.tech_challenge_i.application.domain.User;
-import br.com.fiap.tech_challenge_i.application.domain.exceptions.BusinesException;
+import br.com.fiap.tech_challenge_i.application.domain.exceptions.BusinessException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -25,7 +25,7 @@ public record UserRequestDTO(
                     .login(this.login()).password(this.password())
                     .address(this.address().toDomain()).build();
         } else {
-            throw new BusinesException(
+            throw new BusinessException(
                     "Invalid user type '%s'".formatted(this.userTypeDTO().toString()));
         }
     }

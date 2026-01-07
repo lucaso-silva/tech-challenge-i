@@ -3,15 +3,12 @@ package br.com.fiap.tech_challenge_i.infastruture.inbound.rest;
 import java.net.URI;
 import java.util.List;
 
-import br.com.fiap.tech_challenge_i.infastruture.inbound.rest.dtos.UpdateUserRequestDTO;
+import br.com.fiap.tech_challenge_i.infastruture.inbound.rest.dtos.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import br.com.fiap.tech_challenge_i.application.domain.User;
 import br.com.fiap.tech_challenge_i.application.ports.inbound.ForUserService;
-import br.com.fiap.tech_challenge_i.infastruture.inbound.rest.dtos.UserDetailResponseDTO;
-import br.com.fiap.tech_challenge_i.infastruture.inbound.rest.dtos.UserRequestDTO;
-import br.com.fiap.tech_challenge_i.infastruture.inbound.rest.dtos.UserResponseDTO;
 import jakarta.validation.Valid;
 
 @RestController
@@ -56,15 +53,19 @@ public class UserController {
         return ResponseEntity.ok(UserDetailResponseDTO.toDTO(updatedUser));
     }
 
+    @PutMapping("/password/{login}")
+    public ResponseEntity<Void> changePassword(@PathVariable String login,
+                                              @Valid @RequestBody ChangePasswordRequestDTO requestDTO) {
+
+        forUserService.changePassword(login, requestDTO.password(), requestDTO.newPassword());
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         forUserService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    /*TODO:
-    Rotas para:
-    Update da senha /v1/user/password/{login} - login é unico
 
-*/
 }

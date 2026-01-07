@@ -73,13 +73,13 @@ public class UserJPAEntity {
     public static UserJPAEntity of(User user) {
         if (user instanceof Client) {
             return new UserJPAEntity(user.getName(), user.getEmail(), user.getLogin(), user.getPassword(),
-                    UserTypeJPAEntity.CLIENT, LocalDateTime.now(), AddressJPAEntity.of(user.getAddress()));
+                    UserTypeJPAEntity.CLIENT, user.getLastModifiedDate(), AddressJPAEntity.of(user.getAddress()));
 
         }
 
         if (user instanceof RestaurantOwner) {
             return new UserJPAEntity(user.getName(), user.getEmail(), user.getLogin(), user.getPassword(),
-                    UserTypeJPAEntity.RESTAURANT_OWNER, LocalDateTime.now(), AddressJPAEntity.of(user.getAddress()));
+                    UserTypeJPAEntity.RESTAURANT_OWNER, user.getLastModifiedDate(), AddressJPAEntity.of(user.getAddress()));
         }
         throw new IllegalArgumentException("Unknown type");
     }

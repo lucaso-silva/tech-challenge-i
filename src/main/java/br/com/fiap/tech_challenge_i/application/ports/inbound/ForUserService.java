@@ -12,7 +12,7 @@ public interface ForUserService {
 
     User updateUser(Long id, UpdateUserCommand user);
 
-    void changePassword(Long id, String oldPassword, String newPassword);
+    void changePassword(String login, String oldPassword, String newPassword);
 
     void delete(Long id);
 

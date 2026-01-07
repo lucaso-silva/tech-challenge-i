@@ -6,16 +6,14 @@ import java.util.List;
 import java.util.Optional;
 
 import br.com.fiap.tech_challenge_i.application.usecase.UpdateUserCommand;
-import br.com.fiap.tech_challenge_i.infastruture.inbound.rest.dtos.UpdateUserRequestDTO;
 import org.springframework.stereotype.Service;
 
 import br.com.fiap.tech_challenge_i.application.domain.User;
-import br.com.fiap.tech_challenge_i.application.domain.exceptions.BusinesException;
+import br.com.fiap.tech_challenge_i.application.domain.exceptions.BusinessException;
 import br.com.fiap.tech_challenge_i.application.domain.exceptions.NotFoundException;
 import br.com.fiap.tech_challenge_i.application.ports.inbound.ForUserService;
 import br.com.fiap.tech_challenge_i.application.ports.outbound.repositories.UserRepository;
-
-import static java.util.stream.Collectors.toList;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService implements ForUserService {
@@ -25,44 +23,62 @@ public class UserService implements ForUserService {
         this.repository = repository;
     }
 
+    @Transactional
     @Override
     public User create(User user) {
         Optional<User> byEmail = this.findByEmail(user.getEmail());
         byEmail.ifPresent(u -> {
-            throw new BusinesException("Email '%s' already used".formatted(user.getEmail()));
+            throw new BusinessException("Email '%s' already used".formatted(user.getEmail()));
         });
 
         Optional<User> byLogin = this.getByLogin(user.getLogin());
         byLogin.ifPresent(u -> {
-            throw new BusinesException("Login '%s' already used".formatted(user.getLogin()));
+            throw new BusinessException("Login '%s' already used".formatted(user.getLogin()));
         });
 
         return repository.create(user);
     }
 
+    @Transactional
     @Override
-    public User updateUser(Long id, UpdateUserCommand user) {
+    public User updateUser(Long id, UpdateUserCommand updateUser) {
         User existentUser = repository.findById(id)
                 .orElseThrow(()-> new NotFoundException("User with id '%s' not found".formatted(id)));
 
-        Optional<User> byEmail = repository.findByEmail(user.email());
+        Optional<User> byEmail = repository.findByEmail(updateUser.email());
         byEmail.ifPresent(u -> {
             if(!u.getId().equals(existentUser.getId())) {
-                throw new BusinesException("Email '%s' already used".formatted(user.email()));
+                throw new BusinessException("Email '%s' already used".formatted(updateUser.email()));
             }
         });
 
-        user.applyTo(existentUser);
+        updateUser.applyTo(existentUser);
         existentUser.setLastModifiedDate(LocalDateTime.now());
 
         return repository.update(existentUser);
     }
 
+    @Transactional
     @Override
-    public void changePassword(Long id, String oldPassword, String newPassword) {
+    public void changePassword(String login, String oldPassword, String newPassword) {
+        User existentUser = repository.findByLogin(login)
+                .orElseThrow(()-> new NotFoundException("User with login '%s' not found".formatted(login)));
 
+        if(!existentUser.getPassword().equals(oldPassword)) {
+            throw new BusinessException("The current password provided is incorrect");
+        }
+
+        if(oldPassword.equals(newPassword)) {
+            throw new BusinessException("The new password cannot be the same as the current password");
+        }
+
+        existentUser.setPassword(newPassword);
+        existentUser.setLastModifiedDate(LocalDateTime.now());
+
+        repository.update(existentUser);
     }
 
+    @Transactional
     @Override
     public void delete(Long id) {
         repository.findById(id)
@@ -70,6 +86,7 @@ public class UserService implements ForUserService {
         repository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> findByNameLike(String name) {
         if (name == null || name.isBlank()) {
@@ -90,11 +107,13 @@ public class UserService implements ForUserService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<User> findByEmail(String email) {
         return repository.findByEmail(email);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public User findByLogin(String login) {
 
@@ -103,6 +122,7 @@ public class UserService implements ForUserService {
                 .orElseThrow(() -> new NotFoundException("No users with the login '%s' were found".formatted(login)));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public boolean validateLogin(String login, String password) {
         return false;
