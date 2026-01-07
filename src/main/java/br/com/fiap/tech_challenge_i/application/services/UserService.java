@@ -61,8 +61,7 @@ public class UserService implements ForUserService {
     @Transactional
     @Override
     public void changePassword(String login, String oldPassword, String newPassword) {
-        User existentUser = repository.findByLogin(login)
-                .orElseThrow(()-> new NotFoundException("User with login '%s' not found".formatted(login)));
+        User existentUser = findByLogin(login);
 
         if(!existentUser.getPassword().equals(oldPassword)) {
             throw new BusinessException("The current password provided is incorrect");
@@ -125,7 +124,9 @@ public class UserService implements ForUserService {
     @Transactional(readOnly = true)
     @Override
     public boolean validateLogin(String login, String password) {
-        return false;
+        return this.getByLogin(login)
+                .map(u -> u.getPassword().equals(password))
+                .isPresent();
     }
 
     private Optional<User> getByLogin(String login) {
