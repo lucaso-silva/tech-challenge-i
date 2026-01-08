@@ -125,7 +125,7 @@ public class UserService implements ForUserService {
     @Override
     public boolean validateLogin(String login, String password) {
         return this.getByLogin(login)
-                .map(u -> u.getPassword().equals(password))
+                .filter(u -> u.getPassword().equals(password))
                 .isPresent();
     }
 

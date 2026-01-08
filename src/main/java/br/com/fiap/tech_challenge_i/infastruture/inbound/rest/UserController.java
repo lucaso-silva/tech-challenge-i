@@ -66,4 +66,11 @@ public class UserController {
         forUserService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<ValidateLoginResponseDTO> validateLogin(@Valid @RequestBody ValidateLoginRequestDTO requestDTO){
+        boolean isValid = forUserService.validateLogin(requestDTO.login(), requestDTO.password());
+
+        return ResponseEntity.ok(new ValidateLoginResponseDTO(isValid));
+    }
 }
