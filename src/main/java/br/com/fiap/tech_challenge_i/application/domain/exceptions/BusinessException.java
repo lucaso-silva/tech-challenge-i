@@ -1,8 +1,8 @@
 package br.com.fiap.tech_challenge_i.application.domain.exceptions;
 
-public class BusinesException extends DomainException {
+public class BusinessException extends DomainException {
 
-    public BusinesException(String message) {
+    public BusinessException(String message) {
         super(message);
     }
 
