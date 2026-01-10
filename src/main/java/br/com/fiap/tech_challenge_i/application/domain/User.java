@@ -1,12 +1,12 @@
 package br.com.fiap.tech_challenge_i.application.domain;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,7 +19,6 @@ public abstract class User {
     private String email;
     private String login;
     private String password;
-    private LocalDate lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
     private Address address;
-
 }

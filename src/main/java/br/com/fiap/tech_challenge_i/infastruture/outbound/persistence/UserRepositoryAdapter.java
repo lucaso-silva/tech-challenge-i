@@ -28,23 +28,33 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public User update(User user) {
-        // TODO: Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        UserJPAEntity userJPAEntity = UserJPAEntity.of(user);
+        userJPAEntity.setId(user.getId());
+
+        return userJPARepository
+                .save(userJPAEntity)
+                .toDomain();
     }
 
     @Override
     public void deleteById(Long id) {
-        // TODO: Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+        userJPARepository.deleteById(id);
     }
 
     @Override
-    public List<User> findAll(){
+    public List<User> findAll() {
         return userJPARepository
                 .findAll()
                 .stream()
                 .map(UserJPAEntity::toDomain)
                 .toList();
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return userJPARepository
+                .findById(id)
+                .map(UserJPAEntity::toDomain);
     }
 
     @Override
@@ -58,8 +68,9 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public Optional<User> findByEmail(String email) {
-        // TODO: Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByEmail'");
+        return userJPARepository
+                .findByEmail(email)
+                .map(UserJPAEntity::toDomain);
     }
 
     @Override

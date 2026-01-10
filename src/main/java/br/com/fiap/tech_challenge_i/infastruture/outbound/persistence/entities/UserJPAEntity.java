@@ -1,10 +1,12 @@
 package br.com.fiap.tech_challenge_i.infastruture.outbound.persistence.entities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import br.com.fiap.tech_challenge_i.application.domain.Client;
 import br.com.fiap.tech_challenge_i.application.domain.RestaurantOwner;
 import br.com.fiap.tech_challenge_i.application.domain.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -39,7 +41,7 @@ public class UserJPAEntity {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String login;
 
     @Column(name = "password", nullable = false)
@@ -51,14 +53,35 @@ public class UserJPAEntity {
 
     @NotNull
     @Column(nullable = false)
-    private LocalDate lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "address_id", nullable = false)
     private AddressJPAEntity address;
 
+    public UserJPAEntity(String name, String email, String login, String password, UserTypeJPAEntity userType,
+            LocalDateTime lastModifiedDate, AddressJPAEntity addressJPAEntity) {
+        this.name = name;
+        this.email = email;
+        this.login = login;
+        this.password = password;
+        this.userType = userType;
+        this.address = addressJPAEntity;
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
     public static UserJPAEntity of(User user) {
-        return new UserJPAEntity();
+        if (user instanceof Client) {
+            return new UserJPAEntity(user.getName(), user.getEmail(), user.getLogin(), user.getPassword(),
+                    UserTypeJPAEntity.CLIENT, user.getLastModifiedDate(), AddressJPAEntity.of(user.getAddress()));
+
+        }
+
+        if (user instanceof RestaurantOwner) {
+            return new UserJPAEntity(user.getName(), user.getEmail(), user.getLogin(), user.getPassword(),
+                    UserTypeJPAEntity.RESTAURANT_OWNER, user.getLastModifiedDate(), AddressJPAEntity.of(user.getAddress()));
+        }
+        throw new IllegalArgumentException("Unknown type");
     }
 
     public User toDomain() {

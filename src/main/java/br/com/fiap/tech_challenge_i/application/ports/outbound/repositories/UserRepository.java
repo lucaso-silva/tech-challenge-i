@@ -15,6 +15,8 @@ public interface UserRepository {
 
     List<User> findAll();
 
+    Optional<User> findById(Long id);
+
     List<User> findByNameLike(String name);
 
     Optional<User> findByEmail(String email);
