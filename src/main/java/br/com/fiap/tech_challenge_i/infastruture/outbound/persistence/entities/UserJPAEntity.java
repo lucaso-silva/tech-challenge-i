@@ -17,7 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.CreationTimestamp;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,7 +51,7 @@ public class UserJPAEntity {
     @Enumerated(EnumType.STRING)
     private UserTypeJPAEntity userType;
 
-    @NotNull
+    @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime lastModifiedDate;
 
