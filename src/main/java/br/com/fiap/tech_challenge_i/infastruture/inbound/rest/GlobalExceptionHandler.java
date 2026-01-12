@@ -2,7 +2,9 @@ package br.com.fiap.tech_challenge_i.infastruture.inbound.rest;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -60,15 +62,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
 
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors()
-                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+        List<Map<String, String>> invalidParams = ex.getBindingResult().getFieldErrors()
+                .stream()
+                .map(error -> {
+                    Map<String, String> param = new HashMap<>();
+                    param.put("name", error.getField());
+                    param.put("reason", error.getDefaultMessage());
+                    return param;
+                })
+                .collect(Collectors.toList());
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Validation failed");
         problemDetail.setType(URI.create("https://example.com/validation-error"));
         problemDetail.setTitle("Validation Error");
         problemDetail.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
-        problemDetail.setProperty("invalid-params", errors);
+        problemDetail.setProperty("invalid-params", invalidParams);
         return new ResponseEntity<>(problemDetail, HttpStatus.BAD_REQUEST);
     }
 }
