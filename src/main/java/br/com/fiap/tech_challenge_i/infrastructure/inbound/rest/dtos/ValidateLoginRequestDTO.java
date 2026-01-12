@@ -1,4 +1,4 @@
-package br.com.fiap.tech_challenge_i.infastruture.inbound.rest.dtos;
+package br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 

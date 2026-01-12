@@ -1,4 +1,4 @@
-package br.com.fiap.tech_challenge_i.infastruture.outbound.persistence;
+package br.com.fiap.tech_challenge_i.infrastructure.outbound.persistence;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import br.com.fiap.tech_challenge_i.application.domain.User;
 import br.com.fiap.tech_challenge_i.application.ports.outbound.repositories.UserRepository;
-import br.com.fiap.tech_challenge_i.infastruture.outbound.persistence.entities.UserJPAEntity;
-import br.com.fiap.tech_challenge_i.infastruture.outbound.persistence.repositories.UserJPARepository;
+import br.com.fiap.tech_challenge_i.infrastructure.outbound.persistence.entities.UserJPAEntity;
+import br.com.fiap.tech_challenge_i.infrastructure.outbound.persistence.repositories.UserJPARepository;
 
 @Service
 public class UserRepositoryAdapter implements UserRepository {

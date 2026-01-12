@@ -1,4 +1,4 @@
-package br.com.fiap.tech_challenge_i.infastruture.inbound.rest;
+package br.com.fiap.tech_challenge_i.infrastructure.inbound.rest;
 
 import java.net.URI;
 import java.util.HashMap;

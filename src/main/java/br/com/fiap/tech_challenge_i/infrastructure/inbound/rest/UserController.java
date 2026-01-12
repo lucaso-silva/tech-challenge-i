@@ -1,9 +1,9 @@
-package br.com.fiap.tech_challenge_i.infastruture.inbound.rest;
+package br.com.fiap.tech_challenge_i.infrastructure.inbound.rest;
 
 import java.net.URI;
 import java.util.List;
 
-import br.com.fiap.tech_challenge_i.infastruture.inbound.rest.dtos.*;
+import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

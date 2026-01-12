@@ -1,4 +1,4 @@
-package br.com.fiap.tech_challenge_i.infastruture.outbound.persistence.entities;
+package br.com.fiap.tech_challenge_i.infrastructure.outbound.persistence.entities;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
