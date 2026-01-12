@@ -24,7 +24,7 @@ import br.com.fiap.tech_challenge_i.application.domain.exceptions.NotFoundExcept
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { NotFoundException.class })
-    protected ResponseEntity<ProblemDetail> handleNotFound2(final NotFoundException ex, final WebRequest request) {
+    protected ResponseEntity<ProblemDetail> handleNotFound(final NotFoundException ex, final WebRequest request) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setType(URI.create("https://example.com/not-found"));
         problemDetail.setTitle("Not Found");

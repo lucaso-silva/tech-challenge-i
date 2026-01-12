@@ -4,6 +4,7 @@ import br.com.fiap.tech_challenge_i.application.domain.Client;
 import br.com.fiap.tech_challenge_i.application.domain.RestaurantOwner;
 import br.com.fiap.tech_challenge_i.application.domain.User;
 import br.com.fiap.tech_challenge_i.application.domain.exceptions.BusinessException;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -13,7 +14,7 @@ public record UserRequestDTO(
         @NotBlank(message = "The login can't be empty") String login,
         @NotBlank(message = "The password can't be empty") String password,
         UserTypeDTO userTypeDTO,
-        @NotNull(message = "The address can't be empty") AddressDTO address) {
+        @NotNull(message = "The address can't be empty") @Valid AddressDTO address) {
 
     public User toDomain() {
         if (this.userTypeDTO.equals(UserTypeDTO.CLIENT)) {
