@@ -5,6 +5,7 @@ import java.util.List;
 
 import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import br.com.fiap.tech_challenge_i.application.domain.User;
@@ -28,6 +29,7 @@ public class UserController {
                         .stream().map(UserResponseDTO::toDTO).toList());
     }
 
+    @PreAuthorize("isAuthenticated() and #login == authentication.name")
     @GetMapping("/{login}")
     public ResponseEntity<UserDetailResponseDTO> fetchUserByLogin(@PathVariable("login") String login) {
 
@@ -45,6 +47,7 @@ public class UserController {
 
     }
 
+    @PreAuthorize("isAuthenticated() and (#id != null && @userService.isOwner(#id, authentication.name))")
     @PutMapping("/{id}")
     public ResponseEntity<UserDetailResponseDTO> updateUser(@PathVariable Long id,
                                                             @Valid @RequestBody UpdateUserRequestDTO requestDTO) {
@@ -53,6 +56,7 @@ public class UserController {
         return ResponseEntity.ok(UserDetailResponseDTO.toDTO(updatedUser));
     }
 
+    @PreAuthorize("isAuthenticated() and #login == authentication.name")
     @PutMapping("/password/{login}")
     public ResponseEntity<Void> changePassword(@PathVariable String login,
                                               @Valid @RequestBody ChangePasswordRequestDTO requestDTO) {
@@ -61,16 +65,12 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("isAuthenticated() and (#id != null && @userService.isOwner(#id, authentication.name))")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         forUserService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<ValidateLoginResponseDTO> validateLogin(@Valid @RequestBody ValidateLoginRequestDTO requestDTO){
-        boolean isValid = forUserService.validateLogin(requestDTO.login(), requestDTO.password());
 
-        return ResponseEntity.ok(new ValidateLoginResponseDTO(isValid));
-    }
 }

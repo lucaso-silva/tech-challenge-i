@@ -19,6 +19,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import br.com.fiap.tech_challenge_i.application.domain.exceptions.BusinessException;
 import br.com.fiap.tech_challenge_i.application.domain.exceptions.NotFoundException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -42,6 +44,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         problemDetail.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
+    }
+
+    @ExceptionHandler(value = { AccessDeniedException.class, AuthenticationException.class })
+    protected ResponseEntity<ProblemDetail> handleAccessDenied(final Exception ex, final WebRequest request) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "Access denied");
+        problemDetail.setType(URI.create("https://example.com/access-denied"));
+        problemDetail.setTitle("Access Denied");
+        problemDetail.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail);
     }
 
     @ExceptionHandler(value = { Exception.class })

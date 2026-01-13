@@ -14,13 +14,16 @@ import br.com.fiap.tech_challenge_i.application.domain.exceptions.NotFoundExcept
 import br.com.fiap.tech_challenge_i.application.ports.inbound.ForUserService;
 import br.com.fiap.tech_challenge_i.application.ports.outbound.repositories.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UserService implements ForUserService {
     private UserRepository repository;
+    private PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -131,5 +134,12 @@ public class UserService implements ForUserService {
 
     private Optional<User> getByLogin(String login) {
         return repository.findByLogin(login);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isOwner(Long userId, String login) {
+        return repository.findById(userId)
+                .map(user -> user.getLogin().equals(login))
+                .orElse(false);
     }
 }
