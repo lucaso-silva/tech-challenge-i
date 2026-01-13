@@ -1,4 +1,21 @@
 services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: grupo4/tech_challenge
+    container_name: grupo4_tech_challenge_app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/grupo4_db
+      SPRING_DATASOURCE_USERNAME: grupo4_user
+      SPRING_DATASOURCE_PASSWORD: grupo4_pass
+    depends_on:
+      - postgresql
+    networks:
+      - challenge_grupo4
+
   postgresql:
     image: postgres:15
     container_name: postgre_db_grupo4
@@ -19,4 +36,3 @@ volumes:
 networks:
   challenge_grupo4:
     driver: bridge
-
