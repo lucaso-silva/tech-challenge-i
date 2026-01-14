@@ -1,0 +1,671 @@
+{
+  "info": {
+    "_postman_id": "07c902c8-57eb-480d-a2db-51cdf7bb4081",
+    "name": "Tech challenge",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Client Flow",
+      "item": [
+        {
+          "name": "User client generator 4devs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "9a115ebc-5bcb-4317-b4a8-fa024bc39976",
+                "exec": [
+                  "const responseData = pm.response.json();",
+                  "",
+                  "if (Array.isArray(responseData)) {",
+                  "    ",
+                  "    responseData.forEach((user) => {",
+                  "",
+                  "        const [localPart, dominio] = user.email.split(\"@\");",
+                  "        ",
+                  "        pm.environment.set(`client_name`, user.nome);",
+                  "        pm.environment.set(`client_email`, user.email);",
+                  "        pm.environment.set(`client_password`, user.senha);",
+                  "        pm.environment.set(`client_login`, localPart)",
+                  "        pm.environment.set(`client_street`, user.endereco);",
+                  "        pm.environment.set(`client_number`, user.numero);",
+                  "        pm.environment.set(`client_neighborhood`, user.bairro);",
+                  "        pm.environment.set(`client_city`, user.cidade);",
+                  "        pm.environment.set(`client_state`, user.estado);",
+                  "        pm.environment.set(`client_zipCode`, user.cep);",
+                  "    });",
+                  "    ",
+                  "} else {",
+                  "    console.log(\"Resposta não é um array válido\");",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "6958b331-030f-4923-977a-9e4610009f20",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "acao",
+                  "value": "gerar_pessoa",
+                  "type": "text"
+                },
+                {
+                  "key": "sexo",
+                  "value": "I",
+                  "type": "text"
+                },
+                {
+                  "key": "pontuacao",
+                  "value": "N",
+                  "type": "text"
+                },
+                {
+                  "key": "txt_qtde",
+                  "value": "1",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://www.4devs.com.br/ferramentas_online.php",
+              "protocol": "https",
+              "host": [
+                "www",
+                "4devs",
+                "com",
+                "br"
+              ],
+              "path": [
+                "ferramentas_online.php"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Client User",
+          "id": "b992e803-244f-4f9b-b33f-b91e961ef7b1",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{client_name}}\",\n    \"email\": \"{{client_email}}\",\n    \"login\": \"{{client_login}}\",\n    \"password\": \"{{client_password}}\",\n    \"userTypeDTO\": \"CLIENT\",\n    \"address\": {\n        \"street\":\"{{client_street}}\",\n        \"number\":\"{{client_number}}\",\n        \"neighborhood\":\"{{client_neighborhood}}\",\n        \"city\":\"{{client_city}}\",\n        \"state\":\"{{client_state}}\",\n        \"zipCode\":\"{{client_zipCode}}\"\n\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/user",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Info By Login",
+          "id": "38311778-b6a0-4f12-810c-d982ee7b8ef2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/user/{{client_login}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "{{client_login}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User by Id",
+          "id": "37da8480-660b-4295-9f7d-3ea155c9b288",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer $JWT_TOKEN"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"João Silva Updated\",\n    \"email\": \"joao.updated@email.com\",\n    \"address\": {\n        \"street\": \"Rua das Flores Updated\",\n        \"number\": \"124\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/user/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User by Id",
+          "id": "c0c84ea6-bae4-49b2-a72f-36d7f0aceabf",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/v1/user/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Password",
+          "id": "dd3db569-434a-44eb-b7c0-e05016dd2a62",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"{{new_client_password}}\",\n  \"newPassword\": \"u0GY7CsPe2\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/user/password/{{client_login}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "password",
+                "{{client_login}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Auth User",
+          "id": "fe6fd8bc-39e7-4d3f-b373-aa965a9b5ea1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"login\": \"string\",\n  \"password\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/user/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "57c21132-9978-4bea-a828-10d5a12b3457"
+    },
+    {
+      "name": "Restaurant Owner Flow",
+      "item": [
+        {
+          "name": "User owner generator 4devs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "9a115ebc-5bcb-4317-b4a8-fa024bc39976",
+                "exec": [
+                  "const html = pm.response.text();",
+                  "",
+                  "function gerarSenha(tamanho = 8) {",
+                  "    const chars = \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\";",
+                  "    let senha = \"\";",
+                  "",
+                  "    for (let i = 0; i < tamanho; i++) {",
+                  "        senha += chars.charAt(Math.floor(Math.random() * chars.length));",
+                  "    }",
+                  "",
+                  "    return senha;",
+                  "}",
+                  "",
+                  "function getValueById(id) {",
+                  "    const regex = new RegExp(",
+                  "        `<input[^>]*id=\"${id}\"[^>]*value=\"([^\"]*)\"`,",
+                  "        \"i\"",
+                  "    );",
+                  "    const match = html.match(regex);",
+                  "    return match ? match[1] : null;",
+                  "}",
+                  "",
+                  "const nome = getValueById(\"nome\");",
+                  "const email = getValueById(\"email\");",
+                  "const endereco = getValueById(\"endereco\");",
+                  "const numero = getValueById(\"numero\");",
+                  "const bairro = getValueById(\"bairro\");",
+                  "const cidade = getValueById(\"cidade\");",
+                  "const estado = getValueById(\"estado\");",
+                  "const cep = getValueById(\"cep\");",
+                  "const site = getValueById(\"site\");",
+                  "",
+                  "let localPart = null;",
+                  "let dominio = null;",
+                  "",
+                  "const login = site.split(\".\")[1];",
+                  "",
+                  "pm.environment.set(\"rest_owner_name\", nome);",
+                  "pm.environment.set(\"rest_owner_email\", email);",
+                  "pm.environment.set(\"rest_owner_login\", login);",
+                  "pm.environment.set(\"rest_owner_password\", gerarSenha());",
+                  "",
+                  "pm.environment.set(\"rest_owner_street\", endereco);",
+                  "pm.environment.set(\"rest_owner_number\", numero);",
+                  "pm.environment.set(\"rest_owner_neighborhood\", bairro);",
+                  "pm.environment.set(\"rest_owner_city\", cidade);",
+                  "pm.environment.set(\"rest_owner_state\", estado);",
+                  "pm.environment.set(\"rest_owner_zipCode\", cep);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "c9af2aac-0e12-462d-a2da-e2eb9888b86f",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "acao",
+                  "value": "gerar_empresa",
+                  "type": "text"
+                },
+                {
+                  "key": "pontuacao",
+                  "value": "N",
+                  "type": "text"
+                },
+                {
+                  "key": "estado",
+                  "value": "SP",
+                  "type": "text"
+                },
+                {
+                  "key": "idade",
+                  "value": "5",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://www.4devs.com.br/ferramentas_online.php",
+              "protocol": "https",
+              "host": [
+                "www",
+                "4devs",
+                "com",
+                "br"
+              ],
+              "path": [
+                "ferramentas_online.php"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Restaurant Owner User",
+          "id": "c8077035-b242-4986-90bb-c13494b38e79",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{rest_owner_name}}\",\n    \"email\": \"{{rest_owner_email}}\",\n    \"login\": \"{{rest_owner_login}}\",\n    \"password\": \"{{rest_owner_password}}\",\n    \"userTypeDTO\": \"RESTAURANT_OWNER\",\n    \"address\": {\n        \"street\":\"{{rest_owner_street}}\",\n        \"number\":\"{{rest_owner_number}}\",\n        \"neighborhood\":\"{{rest_owner_neighborhood}}\",\n        \"city\":\"{{rest_owner_city}}\",\n        \"state\":\"{{rest_owner_state}}\",\n        \"zipCode\":\"{{rest_owner_zipCode}}\"\n\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/user",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Info By Login",
+          "id": "aa8f2b38-bc3a-4d2c-87bf-aec8467f7d51",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/user/{{rest_owner_login}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "{{rest_owner_login}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User by Id",
+          "id": "56de58d6-a4aa-4220-905a-85d7f298491b",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer $JWT_TOKEN"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"João Silva Updated\",\n    \"email\": \"joao.updated@email.com\",\n    \"address\": {\n        \"street\": \"Rua das Flores Updated\",\n        \"number\": \"124\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/user/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User by Id",
+          "id": "12bdda07-881f-46d4-af72-6f68debc7122",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/v1/user/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Password",
+          "id": "d38900cd-fcee-489f-94a7-20832208a22b",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"{{rest_owner_password}}\",\n  \"newPassword\": \"FkCmHpWK0Q\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/user/password/{{rest_owner_login}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "password",
+                "{{rest_owner_login}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Auth User",
+          "id": "7ca4cef7-a004-4842-949d-1aafdb1be2dd",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"login\": \"{{rest_owner_login}}\",\n  \"password\": \"{{rest_owner_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/user/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "1fc43f94-9f20-48ae-b02f-3f26cc102c66"
+    },
+    {
+      "name": "Find All Users",
+      "id": "a568dd63-1055-4ee5-8c4d-8c7ce76fe770",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/v1/user",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "v1",
+            "user"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Find User by name",
+      "id": "abdb6f17-5506-4e90-ad84-97876eeceb33",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/v1/user?name=x",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "v1",
+            "user"
+          ],
+          "query": [
+            {
+              "key": "name",
+              "value": "x"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
