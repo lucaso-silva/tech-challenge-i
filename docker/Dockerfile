@@ -14,9 +14,15 @@ RUN ./mvnw clean package -DskipTests
 
 FROM amazoncorretto:21-alpine
 
+RUN addgroup -S appgroup && \
+    adduser -S -G appgroup appuser
+
 WORKDIR /app
 
 COPY --from=build /app/target/tech-challenge-i-0.0.1-SNAPSHOT.jar app.jar
+RUN chown -R appuser:appgroup /app
+
+USER appuser
 
 EXPOSE 8080
 
