@@ -1,0 +1,17 @@
+# Exclude from Docker build context
+target/
+.mvn/wrapper/maven-wrapper.jar
+*.log
+.DS_Store
+.vscode/
+.idea/
+*.iml
+.git/
+.gitignore
+.gitattributes
+.settings/
+.classpath
+.project
+.factorypath
+mise.toml
+README.md
