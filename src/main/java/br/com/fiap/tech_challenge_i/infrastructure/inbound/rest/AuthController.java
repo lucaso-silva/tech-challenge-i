@@ -1,8 +1,10 @@
 package br.com.fiap.tech_challenge_i.infrastructure.inbound.rest;
 
 import br.com.fiap.tech_challenge_i.application.ports.inbound.ForUserService;
-import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos.ValidateLoginRequestDTO;
-import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos.ValidateLoginResponseDTO;
+import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dto.LoginRequestDTO;
+import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dto.LoginResponseDTO;
+import br.com.fiap.tech_challenge_i.infrastructure.security.JwtService;
+import br.com.fiap.tech_challenge_i.application.domain.exceptions.BusinessException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +14,30 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final ForUserService forUserService;
+    private final JwtService jwtService;
 
-    public AuthController(ForUserService forUserService) {
+    public AuthController(ForUserService forUserService, JwtService jwtService) {
         this.forUserService = forUserService;
+        this.jwtService = jwtService;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<ValidateLoginResponseDTO> validateLogin(
-            @Valid @RequestBody ValidateLoginRequestDTO requestDTO) {
+    @PostMapping
+    public ResponseEntity<LoginResponseDTO> login(
+            @Valid @RequestBody LoginRequestDTO requestDTO) {
+
         boolean isValid = forUserService.validateLogin(requestDTO.login(), requestDTO.password());
-        return ResponseEntity.ok(new ValidateLoginResponseDTO(isValid));
+
+        if (!isValid) {
+            throw new BusinessException("Invalid login or password");
+        }
+
+        String token = jwtService.generateToken(requestDTO.login());
+
+        LoginResponseDTO response = new LoginResponseDTO(
+                token,
+                "Bearer",
+                jwtService.getExpiration());
+
+        return ResponseEntity.ok(response);
     }
 }
