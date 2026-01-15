@@ -39,6 +39,7 @@ public class UserService implements ForUserService {
             throw new BusinessException("Login '%s' already used".formatted(user.getLogin()));
         });
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return repository.create(user);
     }
 
@@ -46,11 +47,11 @@ public class UserService implements ForUserService {
     @Override
     public User updateUser(Long id, UpdateUserCommand updateUser) {
         User existentUser = repository.findById(id)
-                .orElseThrow(()-> new NotFoundException("User with id '%s' not found".formatted(id)));
+                .orElseThrow(() -> new NotFoundException("User with id '%s' not found".formatted(id)));
 
         Optional<User> byEmail = repository.findByEmail(updateUser.email());
         byEmail.ifPresent(u -> {
-            if(!u.getId().equals(existentUser.getId())) {
+            if (!u.getId().equals(existentUser.getId())) {
                 throw new BusinessException("Email '%s' already used".formatted(updateUser.email()));
             }
         });
@@ -66,15 +67,15 @@ public class UserService implements ForUserService {
     public void changePassword(String login, String oldPassword, String newPassword) {
         User existentUser = findByLogin(login);
 
-        if(!existentUser.getPassword().equals(oldPassword)) {
+        if (!passwordEncoder.matches(oldPassword, existentUser.getPassword())) {
             throw new BusinessException("The current password provided is incorrect");
         }
 
-        if(oldPassword.equals(newPassword)) {
+        if (passwordEncoder.matches(newPassword, existentUser.getPassword())) {
             throw new BusinessException("The new password cannot be the same as the current password");
         }
 
-        existentUser.setPassword(newPassword);
+        existentUser.setPassword(passwordEncoder.encode(newPassword));
         existentUser.setLastModifiedDate(LocalDateTime.now());
 
         repository.update(existentUser);
@@ -84,7 +85,7 @@ public class UserService implements ForUserService {
     @Override
     public void delete(Long id) {
         repository.findById(id)
-                .orElseThrow(()-> new NotFoundException("User with id '%s' not found".formatted(id)));
+                .orElseThrow(() -> new NotFoundException("User with id '%s' not found".formatted(id)));
         repository.deleteById(id);
     }
 
@@ -96,10 +97,8 @@ public class UserService implements ForUserService {
         } else {
             List<User> usersByNameLike = repository.findAll()
                     .stream()
-                    .filter( u ->
-                        Arrays.stream(u.getName().toLowerCase().split("\\s+"))
-                                .anyMatch(word -> word.startsWith(name.toLowerCase()))
-                    )
+                    .filter(u -> Arrays.stream(u.getName().toLowerCase().split("\\s+"))
+                            .anyMatch(word -> word.startsWith(name.toLowerCase())))
                     .toList();
             if (usersByNameLike.isEmpty()) {
                 throw new NotFoundException("No user was found that matches the search term '%s'.".formatted(name));
@@ -128,7 +127,7 @@ public class UserService implements ForUserService {
     @Override
     public boolean validateLogin(String login, String password) {
         return this.getByLogin(login)
-                .filter(u -> u.getPassword().equals(password))
+                .filter(u -> passwordEncoder.matches(password, u.getPassword()))
                 .isPresent();
     }
 
