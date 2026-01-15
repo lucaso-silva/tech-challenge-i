@@ -3,13 +3,25 @@ package br.com.fiap.tech_challenge_i.infrastructure.inbound.rest;
 import java.net.URI;
 import java.util.List;
 
-import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.tech_challenge_i.application.domain.User;
 import br.com.fiap.tech_challenge_i.application.ports.inbound.ForUserService;
+import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos.ChangePasswordRequestDTO;
+import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos.UpdateUserRequestDTO;
+import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos.UserDetailResponseDTO;
+import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos.UserRequestDTO;
+import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos.UserResponseDTO;
 import jakarta.validation.Valid;
 
 @RestController
@@ -29,7 +41,7 @@ public class UserController {
                         .stream().map(UserResponseDTO::toDTO).toList());
     }
 
-    @PreAuthorize("isAuthenticated() and #login == authentication.name")
+    @PreAuthorize("isAuthenticated() and #login == authentication.principal")
     @GetMapping("/{login}")
     public ResponseEntity<UserDetailResponseDTO> fetchUserByLogin(@PathVariable("login") String login) {
 
@@ -47,30 +59,30 @@ public class UserController {
 
     }
 
-    @PreAuthorize("isAuthenticated() and (#id != null && @userService.isOwner(#id, authentication.name))")
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDetailResponseDTO> updateUser(@PathVariable Long id,
-                                                            @Valid @RequestBody UpdateUserRequestDTO requestDTO) {
-        User updatedUser = forUserService.updateUser(id, requestDTO.toCommand());
+    @PreAuthorize("isAuthenticated() and #login == authentication.principal")
+    @PutMapping("/{login}")
+    public ResponseEntity<UserDetailResponseDTO> updateUser(@PathVariable String login,
+            @Valid @RequestBody UpdateUserRequestDTO requestDTO) {
 
+        User updatedUser = forUserService.updateUser(login, requestDTO.toCommand());
         return ResponseEntity.ok(UserDetailResponseDTO.toDTO(updatedUser));
     }
 
-    @PreAuthorize("isAuthenticated() and #login == authentication.name")
+    @PreAuthorize("isAuthenticated() and #login == authentication.principal")
     @PutMapping("/password/{login}")
     public ResponseEntity<Void> changePassword(@PathVariable String login,
-                                              @Valid @RequestBody ChangePasswordRequestDTO requestDTO) {
+            @Valid @RequestBody ChangePasswordRequestDTO requestDTO) {
 
         forUserService.changePassword(login, requestDTO.password(), requestDTO.newPassword());
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("isAuthenticated() and (#id != null && @userService.isOwner(#id, authentication.name))")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        forUserService.delete(id);
+    @PreAuthorize("isAuthenticated() and #login == authentication.principal")
+    @DeleteMapping("/{login}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String login) {
+
+        forUserService.delete(login);
         return ResponseEntity.noContent().build();
     }
-
 
 }

@@ -45,9 +45,9 @@ public class UserService implements ForUserService {
 
     @Transactional
     @Override
-    public User updateUser(Long id, UpdateUserCommand updateUser) {
-        User existentUser = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User with id '%s' not found".formatted(id)));
+    public User updateUser(String login, UpdateUserCommand updateUser) {
+        User existentUser = repository.findByLogin(login)
+                .orElseThrow(() -> new NotFoundException("User with login '%s' not found".formatted(login)));
 
         Optional<User> byEmail = repository.findByEmail(updateUser.email());
         byEmail.ifPresent(u -> {
@@ -83,10 +83,10 @@ public class UserService implements ForUserService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
-        repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User with id '%s' not found".formatted(id)));
-        repository.deleteById(id);
+    public void delete(String login) {
+        User user = repository.findByLogin(login)
+                .orElseThrow(() -> new NotFoundException("User with login '%s' not found".formatted(login)));
+        repository.deleteById(user.getId());
     }
 
     @Transactional(readOnly = true)
@@ -135,10 +135,4 @@ public class UserService implements ForUserService {
         return repository.findByLogin(login);
     }
 
-    @Transactional(readOnly = true)
-    public boolean isOwner(Long userId, String login) {
-        return repository.findById(userId)
-                .map(user -> user.getLogin().equals(login))
-                .orElse(false);
-    }
 }

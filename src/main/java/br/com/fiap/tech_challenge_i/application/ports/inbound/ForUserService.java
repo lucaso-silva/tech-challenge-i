@@ -10,11 +10,11 @@ public interface ForUserService {
 
     User create(User user);
 
-    User updateUser(Long id, UpdateUserCommand user);
+    User updateUser(String login, UpdateUserCommand user);
 
     void changePassword(String login, String oldPassword, String newPassword);
 
-    void delete(Long id);
+    void delete(String login);
 
     List<User> findByNameLike(String name);
 
