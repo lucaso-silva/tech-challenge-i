@@ -1,8 +1,8 @@
 package br.com.fiap.tech_challenge_i.infrastructure.inbound.rest;
 
 import br.com.fiap.tech_challenge_i.application.ports.inbound.ForUserService;
-import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dto.LoginRequestDTO;
-import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dto.LoginResponseDTO;
+import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos.LoginRequestDTO;
+import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos.LoginResponseDTO;
 import br.com.fiap.tech_challenge_i.infrastructure.security.JwtService;
 import br.com.fiap.tech_challenge_i.application.domain.exceptions.BusinessException;
 import jakarta.validation.Valid;
