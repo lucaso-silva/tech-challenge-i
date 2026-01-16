@@ -477,7 +477,7 @@
           "response": []
         },
         {
-          "name": "Get User Detail By Login",
+          "name": "Get Rest Owner Detail by Login",
           "id": "aa8f2b38-bc3a-4d2c-87bf-aec8467f7d51",
           "request": {
             "method": "GET",
@@ -505,7 +505,7 @@
           "response": []
         },
         {
-          "name": "Update User by Id",
+          "name": "Update Rest Owner by Login",
           "id": "56de58d6-a4aa-4220-905a-85d7f298491b",
           "request": {
             "method": "PUT",
@@ -526,7 +526,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/v1/user/1",
+              "raw": "http://localhost:8080/v1/user/{{rest_owner_login}}",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -535,14 +535,14 @@
               "path": [
                 "v1",
                 "user",
-                "1"
+                "{{rest_owner_login}}"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "Delete User by Id",
+          "name": "Delete Rest Owner by Login",
           "id": "12bdda07-881f-46d4-af72-6f68debc7122",
           "request": {
             "method": "DELETE",
@@ -570,7 +570,7 @@
           "response": []
         },
         {
-          "name": "Update Password",
+          "name": "Update Rest Owner Password",
           "id": "d38900cd-fcee-489f-94a7-20832208a22b",
           "request": {
             "method": "PUT",
@@ -701,7 +701,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/v1/user?name=x",
+          "raw": "http://localhost:8080/v1/user?name=A",
           "protocol": "http",
           "host": [
             "localhost"
@@ -714,7 +714,8 @@
           "query": [
             {
               "key": "name",
-              "value": "x"
+              "value": "A",
+              "uuid": "cfc52d5e-6b0a-4b5f-b5d4-82bc5cec07f1"
             }
           ]
         }
