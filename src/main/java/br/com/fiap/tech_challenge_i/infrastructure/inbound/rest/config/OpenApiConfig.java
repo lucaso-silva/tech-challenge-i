@@ -15,8 +15,8 @@ public class OpenApiConfig {
         return  new OpenAPI()
                 .info(
                         new Info().title("Users API")
-                                .description("Tech Challenge Fase I - Arquitetura e Desenvolvimento Java")
-                                .version("v0.0.1")
+                                .description("API de gerenciamento de usuários (clientes e dono de restaurante), desenvolvida durante o Tech Challenge da Fase I da Pós-Graduação em Arquitetura e Desenvolvimento Java (FIAP)")
+                                .version("v1.0.0")
                 );
 
     }
