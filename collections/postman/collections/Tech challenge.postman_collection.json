@@ -127,11 +127,18 @@
           "response": []
         },
         {
-          "name": "Get User Info By Login",
+          "name": "Get User Detail By Login",
           "id": "38311778-b6a0-4f12-810c-d982ee7b8ef2",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{client_auth_token}}",
+                "type": "text",
+                "uuid": "6b8244a2-79f7-408e-8348-26bb783924fd"
+              }
+            ],
             "url": {
               "raw": "http://localhost:8080/v1/user/{{client_login}}",
               "protocol": "http",
@@ -149,18 +156,20 @@
           "response": []
         },
         {
-          "name": "Update User by Id",
+          "name": "Update User by Login",
           "id": "37da8480-660b-4295-9f7d-3ea155c9b288",
           "request": {
             "method": "PUT",
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer $JWT_TOKEN"
+                "value": "Bearer {{client_auth_token}}",
+                "type": "text"
               },
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               }
             ],
             "body": {
@@ -173,7 +182,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/v1/user/1",
+              "raw": "http://localhost:8080/v1/user/{{client_login}}",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -182,25 +191,26 @@
               "path": [
                 "v1",
                 "user",
-                "1"
+                "{{client_login}}"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "Delete User by Id",
+          "name": "Delete User by Login",
           "id": "c0c84ea6-bae4-49b2-a72f-36d7f0aceabf",
           "request": {
             "method": "DELETE",
             "header": [
               {
-                "key": "accept",
-                "value": "*/*"
+                "key": "Authorization",
+                "value": "Bearer {{client_auth_token}}",
+                "type": "text"
               }
             ],
             "url": {
-              "raw": "http://localhost:8080/v1/user/1",
+              "raw": "http://localhost:8080/v1/user/{{client_login}}",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -209,7 +219,7 @@
               "path": [
                 "v1",
                 "user",
-                "1"
+                "{{client_login}}"
               ]
             }
           },
@@ -222,17 +232,14 @@
             "method": "PUT",
             "header": [
               {
-                "key": "accept",
-                "value": "*/*"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{client_auth_token}}",
+                "type": "text"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"password\": \"{{new_client_password}}\",\n  \"newPassword\": \"u0GY7CsPe2\"\n}",
+              "raw": "{\n  \"password\": \"{{client_password}}\",\n  \"newPassword\": \"u0GY7CsPe2\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -257,15 +264,39 @@
           "response": []
         },
         {
-          "name": "Auth User",
-          "id": "fe6fd8bc-39e7-4d3f-b373-aa965a9b5ea1",
+          "name": "Auth",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "a0a024f4-9614-4777-b07e-117f3690973f",
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "1b9c2eae-8f75-4fc2-a381-2de13f6a70ef",
+                "exec": [
+                  "const responseData = pm.response.json();",
+                  "",
+                  "pm.environment.set(`client_auth_token`, responseData.token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "59bf683b-9846-4648-b469-2ff8a836dced",
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "accept",
-                "value": "*/*"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -273,7 +304,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"login\": \"string\",\n  \"password\": \"string\"\n}",
+              "raw": "{\n    \"login\": \"{{client_login}}\",\n    \"password\": \"{{client_password}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -281,7 +312,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/v1/user/login",
+              "raw": "http://localhost:8080/v1/auth",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -289,8 +320,7 @@
               "port": "8080",
               "path": [
                 "v1",
-                "user",
-                "login"
+                "auth"
               ]
             }
           },
@@ -447,11 +477,17 @@
           "response": []
         },
         {
-          "name": "Get User Info By Login",
+          "name": "Get Rest Owner Detail by Login",
           "id": "aa8f2b38-bc3a-4d2c-87bf-aec8467f7d51",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{rest_owner_auth_token}}",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "http://localhost:8080/v1/user/{{rest_owner_login}}",
               "protocol": "http",
@@ -469,18 +505,15 @@
           "response": []
         },
         {
-          "name": "Update User by Id",
+          "name": "Update Rest Owner by Login",
           "id": "56de58d6-a4aa-4220-905a-85d7f298491b",
           "request": {
             "method": "PUT",
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer $JWT_TOKEN"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
+                "value": "Bearer {{rest_owner_auth_token}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -493,7 +526,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/v1/user/1",
+              "raw": "http://localhost:8080/v1/user/{{rest_owner_login}}",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -502,21 +535,22 @@
               "path": [
                 "v1",
                 "user",
-                "1"
+                "{{rest_owner_login}}"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "Delete User by Id",
+          "name": "Delete Rest Owner by Login",
           "id": "12bdda07-881f-46d4-af72-6f68debc7122",
           "request": {
             "method": "DELETE",
             "header": [
               {
-                "key": "accept",
-                "value": "*/*"
+                "key": "Authorization",
+                "value": "Bearer {{rest_owner_auth_token}}",
+                "type": "text"
               }
             ],
             "url": {
@@ -536,18 +570,15 @@
           "response": []
         },
         {
-          "name": "Update Password",
+          "name": "Update Rest Owner Password",
           "id": "d38900cd-fcee-489f-94a7-20832208a22b",
           "request": {
             "method": "PUT",
             "header": [
               {
-                "key": "accept",
-                "value": "*/*"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{rest_owner_auth_token}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -577,15 +608,39 @@
           "response": []
         },
         {
-          "name": "Auth User",
-          "id": "7ca4cef7-a004-4842-949d-1aafdb1be2dd",
+          "name": "Auth",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "a0a024f4-9614-4777-b07e-117f3690973f",
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "1b9c2eae-8f75-4fc2-a381-2de13f6a70ef",
+                "exec": [
+                  "const responseData = pm.response.json();",
+                  "",
+                  "pm.environment.set(`rest_owner_auth_token`, responseData.token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "c3c623f5-8e4e-4597-8c04-f275f7416cb5",
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "accept",
-                "value": "*/*"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -593,7 +648,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"login\": \"{{rest_owner_login}}\",\n  \"password\": \"{{rest_owner_password}}\"\n}",
+              "raw": "{\n    \"login\": \"{{rest_owner_login}}\",\n    \"password\": \"{{rest_owner_password}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -601,7 +656,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/v1/user/login",
+              "raw": "http://localhost:8080/v1/auth",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -609,8 +664,7 @@
               "port": "8080",
               "path": [
                 "v1",
-                "user",
-                "login"
+                "auth"
               ]
             }
           },
@@ -647,7 +701,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/v1/user?name=x",
+          "raw": "http://localhost:8080/v1/user?name=A",
           "protocol": "http",
           "host": [
             "localhost"
@@ -660,7 +714,8 @@
           "query": [
             {
               "key": "name",
-              "value": "x"
+              "value": "A",
+              "uuid": "cfc52d5e-6b0a-4b5f-b5d4-82bc5cec07f1"
             }
           ]
         }
