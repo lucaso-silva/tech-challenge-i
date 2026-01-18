@@ -1,17 +1,16 @@
-package br.com.fiap.tech_challenge_i.infrastructure.inbound.rest;
+package br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.controller;
 
+import br.com.fiap.tech_challenge_i.application.domain.exceptions.BusinessException;
 import br.com.fiap.tech_challenge_i.application.ports.inbound.ForUserService;
+import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.api.AuthApi;
 import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos.LoginRequestDTO;
 import br.com.fiap.tech_challenge_i.infrastructure.inbound.rest.dtos.LoginResponseDTO;
 import br.com.fiap.tech_challenge_i.infrastructure.security.JwtService;
-import br.com.fiap.tech_challenge_i.application.domain.exceptions.BusinessException;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1/auth")
-public class AuthController {
+public class AuthController implements AuthApi {
 
     private final ForUserService forUserService;
     private final JwtService jwtService;
@@ -21,9 +20,8 @@ public class AuthController {
         this.jwtService = jwtService;
     }
 
-    @PostMapping
-    public ResponseEntity<LoginResponseDTO> login(
-            @Valid @RequestBody LoginRequestDTO requestDTO) {
+    @Override
+    public ResponseEntity<LoginResponseDTO> login(LoginRequestDTO requestDTO) {
 
         boolean isValid = forUserService.validateLogin(requestDTO.login(), requestDTO.password());
 
