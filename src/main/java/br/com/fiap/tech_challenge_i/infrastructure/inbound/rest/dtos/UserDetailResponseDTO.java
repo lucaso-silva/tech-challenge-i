@@ -6,7 +6,7 @@ public record UserDetailResponseDTO(
         String name,
         String email,
         String login,
-        AddressDTO addressDTO) {
+        AddressDTO address) {
 
     public static UserDetailResponseDTO toDTO(User user) {
         return new UserDetailResponseDTO(
