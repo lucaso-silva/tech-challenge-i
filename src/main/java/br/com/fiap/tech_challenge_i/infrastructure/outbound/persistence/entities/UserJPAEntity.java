@@ -1,6 +1,5 @@
 package br.com.fiap.tech_challenge_i.infrastructure.outbound.persistence.entities;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import br.com.fiap.tech_challenge_i.application.domain.Client;
@@ -55,7 +54,7 @@ public class UserJPAEntity {
     @Column(nullable = false)
     private LocalDateTime lastModifiedDate;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", nullable = false)
     private AddressJPAEntity address;
 
@@ -72,14 +71,15 @@ public class UserJPAEntity {
 
     public static UserJPAEntity of(User user) {
         if (user instanceof Client) {
-            return new UserJPAEntity(user.getName(), user.getEmail(), user.getLogin(), user.getPassword(),
+            return new UserJPAEntity(user.getId(), user.getName(), user.getEmail(), user.getLogin(), user.getPassword(),
                     UserTypeJPAEntity.CLIENT, user.getLastModifiedDate(), AddressJPAEntity.of(user.getAddress()));
 
         }
 
         if (user instanceof RestaurantOwner) {
-            return new UserJPAEntity(user.getName(), user.getEmail(), user.getLogin(), user.getPassword(),
-                    UserTypeJPAEntity.RESTAURANT_OWNER, user.getLastModifiedDate(), AddressJPAEntity.of(user.getAddress()));
+            return new UserJPAEntity(user.getId(), user.getName(), user.getEmail(), user.getLogin(), user.getPassword(),
+                    UserTypeJPAEntity.RESTAURANT_OWNER, user.getLastModifiedDate(),
+                    AddressJPAEntity.of(user.getAddress()));
         }
         throw new IllegalArgumentException("Unknown type");
     }

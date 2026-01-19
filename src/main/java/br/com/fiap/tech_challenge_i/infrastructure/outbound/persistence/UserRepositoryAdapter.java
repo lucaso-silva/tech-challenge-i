@@ -29,7 +29,6 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public User update(User user) {
         UserJPAEntity userJPAEntity = UserJPAEntity.of(user);
-        userJPAEntity.setId(user.getId());
 
         return userJPARepository
                 .save(userJPAEntity)
