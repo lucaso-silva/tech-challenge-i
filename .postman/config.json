@@ -1,0 +1,17 @@
+{
+  "workspace": {
+    "id": "ed3f5ace-5d09-4cae-88ab-b252eff83de9"
+  },
+  "entities": {
+    "collections": [
+      "..\\collections\\postman\\collections\\Tech challenge.postman_collection.json"
+    ],
+    "environments": [
+      "..\\collections\\postman\\environments\\Tech challenge.postman_environment.json"
+    ],
+    "specs": [],
+    "flows": [],
+    "globals": [],
+    "mocks": []
+  }
+}
