@@ -1,20 +1,21 @@
 {
   "info": {
-    "_postman_id": "07c902c8-57eb-480d-a2db-51cdf7bb4081",
+    "_postman_id": "a360bc3b-4da8-45eb-be2f-0d8c94c8d2cd",
     "name": "Tech challenge",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "39440665",
+    "_collection_link": "https://go.postman.co/collection/39440665-a360bc3b-4da8-45eb-be2f-0d8c94c8d2cd?source=collection_link"
   },
   "item": [
     {
       "name": "Client Flow",
       "item": [
         {
-          "name": "User client generator 4devs",
+          "name": "1. User client generator 4devs",
           "event": [
             {
               "listen": "test",
               "script": {
-                "id": "9a115ebc-5bcb-4317-b4a8-fa024bc39976",
                 "exec": [
                   "const responseData = pm.response.json();",
                   "",
@@ -46,7 +47,6 @@
               }
             }
           ],
-          "id": "6958b331-030f-4923-977a-9e4610009f20",
           "request": {
             "method": "POST",
             "header": [
@@ -97,8 +97,7 @@
           "response": []
         },
         {
-          "name": "Create Client User",
-          "id": "b992e803-244f-4f9b-b33f-b91e961ef7b1",
+          "name": "2. Create Client User - Success case",
           "request": {
             "method": "POST",
             "header": [],
@@ -127,85 +126,71 @@
           "response": []
         },
         {
-          "name": "Get User Detail By Login",
-          "id": "38311778-b6a0-4f12-810c-d982ee7b8ef2",
+          "name": "3. Create Client User - Invalid (duplicated e-mail)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Novo usuario\",\n    \"email\": \"{{client_email}}\",\n    \"login\": \"novo.usuario\",\n    \"password\": \"usuariosenha\",\n    \"userTypeDTO\": \"CLIENT\",\n    \"address\": {\n        \"street\":\"{{client_street}}\",\n        \"number\":\"{{client_number}}\",\n        \"neighborhood\":\"{{client_neighborhood}}\",\n        \"city\":\"{{client_city}}\",\n        \"state\":\"{{client_state}}\",\n        \"zipCode\":\"{{client_zipCode}}\"\n\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/user",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Create Client User - Invalid (campo login em falta)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{client_name}}\",\n    \"email\": \"{{client_email}}\",\n    \"login\": \"\",\n    \"password\": \"{{client_password}}\",\n    \"userTypeDTO\": \"CLIENT\",\n    \"address\": {\n        \"street\":\"{{client_street}}\",\n        \"number\":\"{{client_number}}\",\n        \"neighborhood\":\"{{client_neighborhood}}\",\n        \"city\":\"{{client_city}}\",\n        \"state\":\"{{client_state}}\",\n        \"zipCode\":\"{{client_zipCode}}\"\n\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/user",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. Get User Detail By Login - Invalid (usuário nao validado)",
           "request": {
             "method": "GET",
             "header": [
               {
                 "key": "Authorization",
                 "value": "Bearer {{client_auth_token}}",
-                "type": "text",
-                "uuid": "6b8244a2-79f7-408e-8348-26bb783924fd"
-              }
-            ],
-            "url": {
-              "raw": "http://localhost:8080/v1/user/{{client_login}}",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8080",
-              "path": [
-                "v1",
-                "user",
-                "{{client_login}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update User by Login",
-          "id": "37da8480-660b-4295-9f7d-3ea155c9b288",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{client_auth_token}}",
-                "type": "text"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"João Silva Updated\",\n    \"email\": \"joao.updated@email.com\",\n    \"address\": {\n        \"street\": \"Rua das Flores Updated\",\n        \"number\": \"124\"\n    }\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:8080/v1/user/{{client_login}}",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8080",
-              "path": [
-                "v1",
-                "user",
-                "{{client_login}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete User by Login",
-          "id": "c0c84ea6-bae4-49b2-a72f-36d7f0aceabf",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{client_auth_token}}",
                 "type": "text"
               }
             ],
@@ -226,50 +211,11 @@
           "response": []
         },
         {
-          "name": "Update Password",
-          "id": "dd3db569-434a-44eb-b7c0-e05016dd2a62",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{client_auth_token}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"password\": \"{{client_password}}\",\n  \"newPassword\": \"u0GY7CsPe2\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:8080/v1/user/password/{{client_login}}",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8080",
-              "path": [
-                "v1",
-                "user",
-                "password",
-                "{{client_login}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Auth",
+          "name": "6. Auth",
           "event": [
             {
               "listen": "prerequest",
               "script": {
-                "id": "a0a024f4-9614-4777-b07e-117f3690973f",
                 "exec": [
                   ""
                 ],
@@ -281,7 +227,6 @@
             {
               "listen": "test",
               "script": {
-                "id": "1b9c2eae-8f75-4fc2-a381-2de13f6a70ef",
                 "exec": [
                   "const responseData = pm.response.json();",
                   "",
@@ -293,7 +238,6 @@
               }
             }
           ],
-          "id": "59bf683b-9846-4648-b469-2ff8a836dced",
           "request": {
             "method": "POST",
             "header": [
@@ -325,9 +269,245 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "7. Get User Detail By Login - Success case (apos validação do usuário)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{client_auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/v1/user/{{client_login}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "{{client_login}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "8. Update User by Login - Success case",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{client_auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{client_name}}\",\n    \"email\": \"novoemail@email.com\",\n    \"address\": {\n        \"street\": \"Novo endereco\",\n        \"number\": 123,\n        \"neighborhood\": \"Novo bairro\",\n        \"city\": \"{{client_city}}\",\n        \"state\": \"{{client_state}}\",\n        \"zipCode\": \"{{client_zipCode}}\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/user/{{client_login}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "{{client_login}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "9. Update User by Login - Invalid (faltando informações de e-mail)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{client_auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{client_name}}\",\n    \"address\": {\n        \"street\": \"{{client_street}}\",\n        \"number\": {{client_number}},\n        \"neighborhood\": \"{{client_neighborhood}}\",\n        \"city\": \"{{client_city}}\",\n        \"state\": \"{{client_state}}\",\n        \"zipCode\": \"{{client_zipCode}}\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/user/{{client_login}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "{{client_login}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "10. Update Password - Success case",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{client_auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"{{client_password}}\",\n  \"newPassword\": \"novo password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/user/password/{{client_login}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "password",
+                "{{client_login}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "11. Update Password - Invalid (credenciais invalidas)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{client_auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"{{client_password}}\",\n  \"newPassword\": \"novo password 2\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/user/password/{{client_login}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "password",
+                "{{client_login}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "12. Delete User by Login - Success case",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{client_auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/v1/user/{{client_login}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "{{client_login}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "13. Delete User by Login - Invalid (usuário não encontrado)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{client_auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/v1/user/{{client_login}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "user",
+                "{{client_login}}"
+              ]
+            }
+          },
+          "response": []
         }
-      ],
-      "id": "57c21132-9978-4bea-a828-10d5a12b3457"
+      ]
     },
     {
       "name": "Restaurant Owner Flow",
@@ -338,7 +518,6 @@
             {
               "listen": "test",
               "script": {
-                "id": "9a115ebc-5bcb-4317-b4a8-fa024bc39976",
                 "exec": [
                   "const html = pm.response.text();",
                   "",
@@ -396,7 +575,118 @@
               }
             }
           ],
-          "id": "c9af2aac-0e12-462d-a2da-e2eb9888b86f",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "acao",
+                  "value": "gerar_empresa",
+                  "type": "text"
+                },
+                {
+                  "key": "pontuacao",
+                  "value": "N",
+                  "type": "text"
+                },
+                {
+                  "key": "estado",
+                  "value": "SP",
+                  "type": "text"
+                },
+                {
+                  "key": "idade",
+                  "value": "5",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://www.4devs.com.br/ferramentas_online.php",
+              "protocol": "https",
+              "host": [
+                "www",
+                "4devs",
+                "com",
+                "br"
+              ],
+              "path": [
+                "ferramentas_online.php"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User owner generator 4devs Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const html = pm.response.text();",
+                  "",
+                  "function gerarSenha(tamanho = 8) {",
+                  "    const chars = \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\";",
+                  "    let senha = \"\";",
+                  "",
+                  "    for (let i = 0; i < tamanho; i++) {",
+                  "        senha += chars.charAt(Math.floor(Math.random() * chars.length));",
+                  "    }",
+                  "",
+                  "    return senha;",
+                  "}",
+                  "",
+                  "function getValueById(id) {",
+                  "    const regex = new RegExp(",
+                  "        `<input[^>]*id=\"${id}\"[^>]*value=\"([^\"]*)\"`,",
+                  "        \"i\"",
+                  "    );",
+                  "    const match = html.match(regex);",
+                  "    return match ? match[1] : null;",
+                  "}",
+                  "",
+                  "const nome = getValueById(\"nome\");",
+                  "const email = getValueById(\"email\");",
+                  "const endereco = getValueById(\"endereco\");",
+                  "const numero = getValueById(\"numero\");",
+                  "const bairro = getValueById(\"bairro\");",
+                  "const cidade = getValueById(\"cidade\");",
+                  "const estado = getValueById(\"estado\");",
+                  "const cep = getValueById(\"cep\");",
+                  "const site = getValueById(\"site\");",
+                  "",
+                  "let localPart = null;",
+                  "let dominio = null;",
+                  "",
+                  "const login = site.split(\".\")[1];",
+                  "",
+                  "pm.environment.set(\"rest_owner_name\", nome);",
+                  "pm.environment.set(\"rest_owner_email\", email);",
+                  "pm.environment.set(\"rest_owner_login\", login);",
+                  "pm.environment.set(\"rest_owner_password\", gerarSenha());",
+                  "",
+                  "pm.environment.set(\"rest_owner_street\", endereco);",
+                  "pm.environment.set(\"rest_owner_number\", numero);",
+                  "pm.environment.set(\"rest_owner_neighborhood\", bairro);",
+                  "pm.environment.set(\"rest_owner_city\", cidade);",
+                  "pm.environment.set(\"rest_owner_state\", estado);",
+                  "pm.environment.set(\"rest_owner_zipCode\", cep);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -448,7 +738,6 @@
         },
         {
           "name": "Create Restaurant Owner User",
-          "id": "c8077035-b242-4986-90bb-c13494b38e79",
           "request": {
             "method": "POST",
             "header": [],
@@ -478,7 +767,6 @@
         },
         {
           "name": "Get Rest Owner Detail by Login",
-          "id": "aa8f2b38-bc3a-4d2c-87bf-aec8467f7d51",
           "request": {
             "method": "GET",
             "header": [
@@ -506,7 +794,6 @@
         },
         {
           "name": "Update Rest Owner by Login",
-          "id": "56de58d6-a4aa-4220-905a-85d7f298491b",
           "request": {
             "method": "PUT",
             "header": [
@@ -543,7 +830,6 @@
         },
         {
           "name": "Delete Rest Owner by Login",
-          "id": "12bdda07-881f-46d4-af72-6f68debc7122",
           "request": {
             "method": "DELETE",
             "header": [
@@ -571,7 +857,6 @@
         },
         {
           "name": "Update Rest Owner Password",
-          "id": "d38900cd-fcee-489f-94a7-20832208a22b",
           "request": {
             "method": "PUT",
             "header": [
@@ -613,7 +898,6 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "a0a024f4-9614-4777-b07e-117f3690973f",
                 "exec": [
                   ""
                 ],
@@ -625,7 +909,6 @@
             {
               "listen": "test",
               "script": {
-                "id": "1b9c2eae-8f75-4fc2-a381-2de13f6a70ef",
                 "exec": [
                   "const responseData = pm.response.json();",
                   "",
@@ -637,7 +920,6 @@
               }
             }
           ],
-          "id": "c3c623f5-8e4e-4597-8c04-f275f7416cb5",
           "request": {
             "method": "POST",
             "header": [
@@ -670,12 +952,10 @@
           },
           "response": []
         }
-      ],
-      "id": "1fc43f94-9f20-48ae-b02f-3f26cc102c66"
+      ]
     },
     {
       "name": "Find All Users",
-      "id": "a568dd63-1055-4ee5-8c4d-8c7ce76fe770",
       "request": {
         "method": "GET",
         "header": [],
@@ -696,7 +976,6 @@
     },
     {
       "name": "Find User by name",
-      "id": "abdb6f17-5506-4e90-ad84-97876eeceb33",
       "request": {
         "method": "GET",
         "header": [],
@@ -714,8 +993,7 @@
           "query": [
             {
               "key": "name",
-              "value": "A",
-              "uuid": "cfc52d5e-6b0a-4b5f-b5d4-82bc5cec07f1"
+              "value": "A"
             }
           ]
         }
