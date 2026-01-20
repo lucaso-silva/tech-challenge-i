@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,8 +22,8 @@ public interface AuthApi {
     @Operation(summary = "Autenticar usuário", description = "Valida as credenciais do usuário (login e senha) e, em caso de sucesso, retorna um token JWT", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Credenciais do usuário (login e senha)", required = true))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Token JWT gerado com sucesso após validação das credenciais", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponseDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Credenciais inválidas (login ou senha incorretos)", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Dados inválidos (campos obrigatórios ausentes ou formato incorreto)", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = "401", description = "Credenciais inválidas (login ou senha incorretos)", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class)))
     })
     @PostMapping
     ResponseEntity<LoginResponseDTO> login(

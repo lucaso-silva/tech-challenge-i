@@ -13,7 +13,7 @@ public record UserRequestDTO(
         @NotBlank(message = "The email can't be empty") String email,
         @NotBlank(message = "The login can't be empty") String login,
         @NotBlank(message = "The password can't be empty") String password,
-        UserTypeDTO userTypeDTO,
+        @NotNull(message = "The user type can't be empty") UserTypeDTO userTypeDTO,
         @NotNull(message = "The address can't be empty") @Valid AddressDTO address) {
 
     public User toDomain() {
