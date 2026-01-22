@@ -36,130 +36,149 @@ A segurança da aplicação é implementada com **Spring Security** e **JWT**, r
 ## Diagrama da Arquitetura
 
 ```mermaid
-classDiagram
-    
-    class Address{
-    	-Long id
-        -String street
-        -String number
-        -String city
-        -String zipCode
-    }
-    
-    class User{
-        <<abstract>>
-      -Long id
-      -String name
-      -String email
-      -String login
-      -String password
-      -LocalDate lastModifiedDate
-      -Address address
-    }
+graph TB
+    %% External Actors
+    subgraph "External Actors"
+        WEB[Web Browser<br/>Mobile App]
+    end
 
-    class Client{
-    	-List~Order~ orders
-    }
+    %% Infrastructure Inbound Layer
+    subgraph "Infrastructure: Inbound Layer"
+        direction LR
+        JWT_FILTER[JwtAuthenticationFilter<br/>Stateless JWT Processing]
+        
+        subgraph "REST Controllers"
+            USER_CONTROLLER[UserController<br/>/v1/user<br/>• GET all users<br/>• GET by login<br/>• POST create user<br/>• PUT update user<br/>• DELETE user]
+            AUTH_CONTROLLER[AuthController<br/>/v1/auth<br/>• POST authenticate]
+        end
+        
+        DTO[Request/Response DTOs<br/>UserRequestDTO<br/>UserResponseDTO<br/>UpdateUserCommand]
+    end
 
-    class RestaurantOwner{
-    	-List restaurants
-    }
+    %% Application Layer (Ports)
+    subgraph "Application Layer: Ports"
+        direction LR
+        subgraph "Input Ports"
+            FOR_USER_SERVICE[ForUserService<br/>Port Interface]
+        end
+        
+        subgraph "Output Ports"
+            USER_REPOSITORY_PORT[UserRepository<br/>Port Interface]
+        end
+    end
 
-    class UserDTO{
-    <<record>>
-    -String name
-    -String email
-    -String login
-    -Address address
-    }
-    
-    class UserCreateDTO{
-    <<record>>
-    -String name
-    -String email
-    -String login
-    -String password
-    -Address address
-    }
-    
-    class UserUpdateDTO{
-    <<record>>
-    -String name
-    -String email
-    -Address address
-    }
-    
-    class UserChangePasswordDTO{
-    <<record>>
-    -String password
-    }
+    %% Application Layer: Core Business Logic
+    subgraph "Application Layer: Services"
+        direction TB
+        USER_SERVICE[UserService<br/>• User CRUD operations<br/>• Business validation<br/>• Password encoding<br/>• Transaction management]
+        
+        subgraph "Security Services"
+            JWT_SERVICE[JwtService<br/>• Token generation<br/>• Token validation<br/>• Claims extraction]
+            PWD_ENCODER[BCryptPasswordEncoder<br/>Password Encryption]
+        end
+    end
 
-    class LoginDTO{
-        <<record>>
-        -String login
-        -String password
-    }
-    
-    class UserService {
-        <<interface>>
-        +createUser(UserCreateDTO userCreateDto) Long
-        +updateUser(Long id, UserCreateDTO userCreateDto)
-        +changePassword(Long id, UserChangePasswordDTO userChangePasswordDto)
-        +validateLogin(LoginDTO login) String
-        +searchByName(String name) List~UserDTO~
-    }
-    
-    class UserRepository {
-        <<interface>>
-        +findById(Long id) Optional~User~
-        +findByEmail(String email) Optional~User~
-        +findByNameContaining(String name) List~User~
-    }
+    %% Infrastructure Outbound Layer
+    subgraph "Infrastructure: Outbound Layer"
+        direction LR
+        REPO_ADAPTER[UserRepositoryAdapter<br/>Port Implementation<br/>Domain ↔ JPA Mapping]
+        
+        subgraph "JPA Entities"
+            USER_JPA[UserJPAEntity<br/>users table<br/>UserTypeEnum]
+            ADDRESS_JPA[AddressJPAEntity<br/>address table]
+        end
+        
+        JPA_REPO[UserJPARepository<br/>Spring Data JPA]
+    end
 
-	User --> Address
-    User <|-- Client
-    User <|-- RestaurantOwner
-    UserService .. User
-    UserService .. LoginDTO
-    UserService .. UserDTO
-    UserService .. UserCreateDTO
-    UserService .. UserUpdateDTO
-    UserService .. UserChangePasswordDTO
-    UserService .. UserRepository
-    
+    %% External Systems
+    subgraph "External Systems"
+        POSTGRES[(PostgreSQL Database)]
+    end
+
+    %% Configuration and Exception Handling
+    subgraph "Configuration & Cross-Cutting"
+        SECURITY_CONFIG[SecurityConfig<br/>JWT Stateless Config]
+        GLOBAL_HANDLER[GlobalExceptionHandler<br/>ProblemDetail Responses]
+        FLYWAY[Flyway Migrations<br/>Database Versioning]
+    end
+
+    %% Connections - Request Flow
+    WEB -->|HTTP Request| JWT_FILTER
+    JWT_FILTER -->|Authenticated Request| AUTH_CONTROLLER
+    JWT_FILTER -->|Authenticated Request| USER_CONTROLLER
+    AUTH_CONTROLLER -->|Authentication Request| JWT_SERVICE
+    USER_CONTROLLER -->|Business Operations| FOR_USER_SERVICE
+    AUTH_CONTROLLER -->|Token Generation| JWT_SERVICE
+    FOR_USER_SERVICE -->|Service Calls| USER_SERVICE
+    USER_SERVICE -->|Repository Operations| USER_REPOSITORY_PORT
+    USER_REPOSITORY_PORT -->|Adapter Calls| REPO_ADAPTER
+    REPO_ADAPTER -->|JPA Operations| JPA_REPO
+    JPA_REPO -->|Database Operations| USER_JPA
+    JPA_REPO -->|Database Operations| ADDRESS_JPA
+    USER_JPA -->|SQL Queries| POSTGRES
+    ADDRESS_JPA -->|SQL Queries| POSTGRES
+
+    %% Security Flow
+    USER_SERVICE -->|Password Operations| PWD_ENCODER
+    JWT_FILTER -->|Token Validation| JWT_SERVICE
+    JWT_SERVICE -->|Token Operations| SECURITY_CONFIG
+
+    %% DTO Mapping
+    USER_CONTROLLER -->|Request Mapping| DTO
+    DTO -->|toDomain| USER_SERVICE
+
+    %% Exception Handling
+    USER_SERVICE -->|Domain Exceptions| GLOBAL_HANDLER
+    REPO_ADAPTER -->|Persistence Exceptions| GLOBAL_HANDLER
+
+    %% Configuration
+    USER_CONTROLLER -->|Security Rules| SECURITY_CONFIG
+    JPA_REPO -->|Migration Support| FLYWAY
+
+    %% Styling
+    classDef external fill:#e1f5fe
+    classDef inbound fill:#f3e5f5
+    classDef ports fill:#fff3e0
+    classDef services fill:#e8f5e8
+    classDef outbound fill:#fff8e1
+    classDef database fill:#fce4ec
+    classDef config fill:#f1f8e9
+
+    class WEB external
+    class JWT_FILTER,USER_CONTROLLER,AUTH_CONTROLLER,DTO inbound
+    class FOR_USER_SERVICE,USER_REPOSITORY_PORT ports
+    class USER_SERVICE,JWT_SERVICE,PWD_ENCODER services
+    class REPO_ADAPTER,USER_JPA,ADDRESS_JPA,JPA_REPO outbound
+    class POSTGRES database
+    class SECURITY_CONFIG,GLOBAL_HANDLER,FLYWAY config
 ```
 
 ```mermaid
-sequenceDiagram
-  actor User as User
-  participant Controller as Controller
-  participant Service as Service
-  participant DB as DB
-  User ->> Controller: POST /user
-  Controller ->> Service: createUser()
-  Service ->> DB: Save User
-  DB ->> Service: User
-  Service ->> Controller: UserDTO
-  Controller ->> User: 201 created
-  User ->> Controller: GET /user?name=xx
-  Controller ->> Service: searchByName()
-  DB ->> Service: List<User>
-  Service ->> Controller: List<UserDTO>
-  Controller ->> User: 200 UserDTO
-  User ->> Controller: PUT /user/{userId}/pass
-  Controller ->> Service: changePassword()
-  DB ->> Service: User
-  Service ->> Controller: OK
-  Controller ->> User: 204 No Content
-  User ->> Controller: DELETE /user/{userId}
-  Controller ->> Service: delete()
-  DB ->> Service: OK
-  Service ->> Controller: OK
-  Controller ->> User: 204 No Content
-  User ->> Controller: POST user/login
-  Controller ->> Service: validateLogin()
-  Service ->> Controller: OK
-  Controller ->> User: 200 Token JWT
+erDiagram
+    USERS {
+        BIGINT id PK "GENERATED ALWAYS AS IDENTITY"
+        VARCHAR(255) name "NOT NULL"
+        VARCHAR(255) email "NOT NULL"
+        VARCHAR(255) login "NOT NULL"
+        VARCHAR(255) password "NOT NULL"
+        VARCHAR(31) user_type "NOT NULL"
+        TIMESTAMP last_modified_date "NOT NULL"
+        BIGINT address_id "NOT NULL, FK → address.id"
+    }
+
+    ADDRESS {
+        BIGINT id PK "GENERATED ALWAYS AS IDENTITY"
+        VARCHAR(255) street "NOT NULL"
+        INTEGER number "NOT NULL"
+        VARCHAR(255) neighborhood "NOT NULL"
+        VARCHAR(255) city "NOT NULL"
+        VARCHAR(255) state "NOT NULL"
+        VARCHAR(255) zip_code "NOT NULL"
+    }
+
+    %% Relationships
+    USERS ||--|| ADDRESS : "foreign key (address_id)"
 ```
 
 # API – Endpoints
